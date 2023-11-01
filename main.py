@@ -22,68 +22,64 @@ class ConnectX:
     def auto_send_connection_universities(self, listOfUniversities:list, listOfRules:list = ['ceo', 'software', 'developer']):
         connections_sent = 0
 
-        for r in listOfRules:
-            for u in listOfUniversities:
-                self.browser.get(f"https://www.linkedin.com/company/{u}/people/?keywords={r}")
+        for u in listOfUniversities:
+            for r in listOfRules:
+                self.browser.get(f"https://www.linkedin.com/school/{u}/people/?keywords={r}")
                 self.browser.find_element(By.TAG_NAME, "body").send_keys(Keys.END)
                 print('Waiting connections to load...')
                 sleep(3)
                 while True:
-                    addBTN = self.browser.find_elements(By.CSS_SELECTOR, '.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view.full-width')
-
+                    addBTN = self.browser.find_elements(By.XPATH, "//span[text()='Connect'][ancestor::button[contains(@class, 'artdeco-button') and contains(@class, 'artdeco-button--2') and contains(@class, 'artdeco-button--secondary') and contains(@class, 'ember-view') and contains(@class, 'full-width')]]")
+                    if len(addBTN) == 0:
+                        break
+                    print("Buttons:", len(addBTN))
+                    
+                    
                     for i, btn in enumerate(addBTN):
-                        if "Connect" in btn.find_element(By.TAG_NAME, 'span').text:
-                            try:
-                                btn.click()
-                                sleep(1)  # Add a small delay for the "Send now" button to appear
-                                send_now_btn = self.browser.find_element(By.CSS_SELECTOR, 'button[aria-label="Send now"]')
-                                send_now_btn.click()
-                                connections_sent += 1
-                                print(f'{i} Connection sent.')
-                            except:
-                                pass
+                        try:
+                            btn.click()
+                            sleep(0.2)  # Add a small delay for the "Send now" button to appear
+                            send_now_btn = self.browser.find_element(By.CSS_SELECTOR, 'button[aria-label="Send now"]')
+                            send_now_btn.click()
+                            connections_sent += 1
+                            print(f'Connection sent.')
+                        except:
+                            pass
 
-                    if (i + 1) % 5 == 0:
-                        # Scroll down to load more content
-                        self.browser.find_element(By.TAG_NAME, "body").send_keys(Keys.END)
-                        sleep(3)  # Add a delay to let the page load more content
-                    else:
-                        break  # Exit the loop when no more "Connect" buttons are found
-
+                    self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        print(f'Connections sent: {connections_sent}')
 
     def auto_send_connection_companies(self, listOfCompanies:list = ['taskure', 'mokalmat'], listOfRules:list = ['ceo', 'software', 'front', 'developer']):
         connections_sent = 0
 
-        for r in listOfRules:
-            for u in listOfCompanies:
+
+        for u in listOfCompanies:
+            for r in listOfRules:
                 self.browser.get(f"https://www.linkedin.com/company/{u}/people/?keywords={r}")
+                self.browser.find_element(By.TAG_NAME, "body").send_keys(Keys.END)
                 print('Waiting connections to load...')
                 sleep(3)
-                self.browser.find_element(By.TAG_NAME, "body").send_keys(Keys.END)
                 while True:
-                    addBTN = self.browser.find_elements(By.CSS_SELECTOR, '.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view.full-width')
-
+                    addBTN = self.browser.find_elements(By.XPATH, "//span[text()='Connect'][ancestor::button[contains(@class, 'artdeco-button') and contains(@class, 'artdeco-button--2') and contains(@class, 'artdeco-button--secondary') and contains(@class, 'ember-view') and contains(@class, 'full-width')]]")
+                    if len(addBTN) == 0:
+                        break
+                    print("Buttons:", len(addBTN))
+                    
+                    
                     for i, btn in enumerate(addBTN):
-                        if "Connect" in btn.find_element(By.TAG_NAME, 'span').text:
-                            try:
-                                btn.click()
-                                sleep(1)  # a small delay for the "Send now" button to appear
-                                send_now_btn = self.browser.find_element(By.CSS_SELECTOR, 'button[aria-label="Send now"]')
-                                send_now_btn.click()
-                                connections_sent += 1
-                                print(f'{i} Connection sent.')
-                            except:
-                                pass
+                        try:
+                            btn.click()
+                            sleep(0.2)  # Add a small delay for the "Send now" button to appear
+                            send_now_btn = self.browser.find_element(By.CSS_SELECTOR, 'button[aria-label="Send now"]')
+                            send_now_btn.click()
+                            connections_sent += 1
+                            print(f'Connection sent.')
+                        except:
+                            pass
 
-                        if (i + 1) % 5 == 0:
-                            # Scroll down to load more content
-                            self.browser.find_element(By.TAG_NAME, "body").send_keys(Keys.END)
-                            
-                            sleep(3)  # Add a delay to let the page load more content
-                        else:
-                            break  # Exit the loop when no more "Connect" buttons are found
+                    self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-        return f'Total connection requests sent: {connections_sent}'
+        print(f'Connections sent: {connections_sent}')
 
 
     def auto_send_connection_mynetwork(self):
